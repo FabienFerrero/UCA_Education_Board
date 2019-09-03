@@ -90,17 +90,20 @@ unsigned int TX_INTERVAL = 5*60;
 //For TTN, use specify ABP mode on the TTN device setting
 
 // LoRaWAN NwkSKey, network session key
-//Enter here your Network Session Key from the TTN device info (same order, i.e. msb)
-static const PROGMEM u1_t NWKSKEY[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+// This is the default Semtech key, which is used by the early prototype TTN
+// network.
+static const PROGMEM u1_t NWKSKEY[16] = { 0x86, 0x06, 0x25, 0x14, 0x8A, 0xCA, 0xF0, 0x9B, 0x5A, 0xF2, 0x7C, 0x6D, 0x4D, 0xF9, 0x83, 0x19 };
+
 
 // LoRaWAN AppSKey, application session key
-//Enter here your App Session Key from the TTN device info (same order, i.e. msb)
-static const u1_t PROGMEM APPSKEY[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+// This is the default Semtech key, which is used by the early prototype TTN
+// network.
+static const u1_t PROGMEM APPSKEY[16] = { 0xB7, 0xC1, 0x46, 0xE1, 0xF4, 0x38, 0x6C, 0xF5, 0xD6, 0x52, 0xAD, 0x5B, 0x89, 0xD5, 0x00, 0xFB };
+
 
 // LoRaWAN end-device address (DevAddr)
-//Enter here your Device Address from the TTN device info (same order, i.e. msb)
-//example 0x12345678
-static const u4_t DEVADDR = 0x12345678;
+
+static const u4_t DEVADDR = 0x2601155B;
 
 ///////////////////////////////////////////////////////////////////
 
@@ -154,19 +157,6 @@ extern uint32_t os_cumulated_sleep_time_in_seconds;
 
 *******************************************/ 
 
-/*
- *  C. Pham's ProMini PCB
-
- 
-// Pin mapping
- 
-const lmic_pinmap lmic_pins = {
-  .nss = 10,
-  .rxtx = LMIC_UNUSED_PIN,
-  .rst = 4,
-  .dio = {2, 3, LMIC_UNUSED_PIN},
-};
-*/
 
 /* Fabien Ferrero UCA breakout
  *  
@@ -181,47 +171,7 @@ const lmic_pinmap lmic_pins = {
   .dio = {2, 7, 9},
 };
 
-/*
- *  C. Hallard's ch2i Mini-Lora  
 
- 
-// Pin mapping
- 
-const lmic_pinmap lmic_pins = {
-  .nss = 10,
-  .rxtx = LMIC_UNUSED_PIN,
-  .rst = A0,
-  .dio = {2, 7, 8},
-};
-*/
-
-/*
- *  LORA Radio Node
-
- 
-// Pin mapping
- 
-const lmic_pinmap lmic_pins = {
-  .nss = 10,
-  .rxtx = LMIC_UNUSED_PIN,
-  .rst = 9,
-  .dio = {2, 3, 4},
-};
-*/
-
-/*
- *  LORA Nexus by Ideetron
-
- 
-// Pin mapping
-
-const lmic_pinmap lmic_pins = {
-    .nss = 10,
-    .rxtx = LMIC_UNUSED_PIN,
-    .rst = LMIC_UNUSED_PIN, // hardwired to AtMega RESET
-    .dio = {4, 5, 7},
-};
-*/
 
 /*****************************
  _____           _      
