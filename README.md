@@ -2,6 +2,7 @@
 Board for Education with LoRa
 
 Version 1.0.0, September, 2019
+
 Author: Fabien Ferrero, Trinh Le Huy
 
 This board was developed for education to support courses on embedded software, digital and analog electronic, telecommunication, signal processing and IoT.
