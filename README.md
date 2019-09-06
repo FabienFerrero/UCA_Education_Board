@@ -23,6 +23,12 @@ This board was developed for education to support courses on embedded software, 
  3.3V        <----> Vcc
 
  ```
+ 
+# USB Driver
+The board is using CH340C chip for USB to 
+You may need to install the driver to use the board:
+https://sparks.gogo.co.nz/ch340.html
+ 
 
 # Schematic
 
