@@ -809,7 +809,7 @@ void setup() {
     }
     
     // Set data rate and transmit power for uplink (note: txpow seems to be ignored by the library)
-    LMIC_setDrTxpow(DR_SF12,14);
+    LMIC_setDrTxpow(DR_SF9,14);
 
 #ifdef WITH_EEPROM
     // get config from EEPROM
