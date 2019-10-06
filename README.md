@@ -7,6 +7,8 @@ Author: Fabien Ferrero and Trinh Le Huy
 
 This board was developed for education to support courses on embedded software, digital and analog electronic, telecommunication, signal processing and IoT.
 
+The board is fabricated by RFThings.
+
 # Wiring
 
 ```
