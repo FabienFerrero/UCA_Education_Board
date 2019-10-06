@@ -17,9 +17,9 @@ This board was developed for education to support courses on embedded software, 
  MOSI  (D11) <----> MOSI
  SCK   (D13) <----> CLK
  SS    (D10) <----> SEL (Chip Select)
- D2          <----> DIO0
+ D3          <----> DIO0
  D7          <----> DIO1
- D9          <----> DIO2
+ D6          <----> DIO2
  3.3V        <----> Vcc
 
  ```
