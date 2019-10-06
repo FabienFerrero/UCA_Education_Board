@@ -1,3 +1,10 @@
+Fabien  : In lmic.c, setDrJoin() for AS923 bands was modified from original from SF12 to SF7
+
+To solve the clock accuracy problem, the following command is added in the main code to increase window time :
+LMIC_setClockError(MAX_CLOCK_ERROR * 1 / 100); 
+  
+
+
 Arduino-LMIC library
 ====================
 This repository contains the IBM LMIC (LoraMAC-in-C) library, slightly

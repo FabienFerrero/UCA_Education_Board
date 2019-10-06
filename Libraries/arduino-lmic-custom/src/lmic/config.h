@@ -7,6 +7,7 @@
 
 #define CFG_eu868 1
 //#define CFG_us915 1
+//#define CFG_as923 1
 // This is the SX1272/SX1273 radio, which is also used on the HopeRF
 // RFM92 boards.
 //#define CFG_sx1272_radio 1
@@ -79,10 +80,5 @@
 // byte-oriented ones, making it use a lot less flash space (but it is
 // also about twice as slow as the original).
 #define USE_IDEETRON_AES
-
-//////////////////
-//added by C. Pham
-#define LMIC_LOWPOWER
-//////////////////
 
 #endif // _lmic_config_h_

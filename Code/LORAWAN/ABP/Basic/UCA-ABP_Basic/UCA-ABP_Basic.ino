@@ -7,23 +7,10 @@
  * including, but not limited to, copying, modification and redistribution.
  * NO WARRANTY OF ANY KIND IS PROVIDED.
  *
- * This example sends a valid LoRaWAN packet with payload "Hello,
- * world!", using frequency and encryption settings matching those of
- * the The Things Network.
- *
  * This uses ABP (Activation-by-personalisation), where a DevAddr and
  * Session keys are preconfigured (unlike OTAA, where a DevEUI and
  * application key is configured, while the DevAddr and session keys are
  * assigned/generated in the over-the-air-activation procedure).
- *
- * Note: LoRaWAN per sub-band duty-cycle limitation is enforced (1% in
- * g1, 0.1% in g2), but not the TTN fair usage policy (which is probably
- * violated by this sketch when left running for longer)!
- *
- * To use this sketch, first register your application and device with
- * the things network, to set or generate a DevAddr, NwkSKey and
- * AppSKey. Each device should have their own unique values for these
- * fields.
  *
  * Do not forget to define the radio type correctly in config.h.
  *
@@ -32,6 +19,10 @@
 #include <lmic.h>
 #include <hal/hal.h>
 #include <SPI.h>
+
+// LoRaWAN end-device address (DevAddr)
+
+static const u4_t DEVADDR = 0x00000000;
 
 // LoRaWAN NwkSKey, network session key
 // This is the default Semtech key, which is used by the early prototype TTN
@@ -44,10 +35,6 @@ static const PROGMEM u1_t NWKSKEY[16] = {  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0
 // network.
 static const u1_t PROGMEM APPSKEY[16] = {  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
-
-// LoRaWAN end-device address (DevAddr)
-
-static const u4_t DEVADDR = 0x00000000;
 
 // These callbacks are only used in over-the-air activation, so they are
 // left empty here (we cannot leave them out completely unless
@@ -68,7 +55,7 @@ const lmic_pinmap lmic_pins = {
     .nss = 10,
     .rxtx = LMIC_UNUSED_PIN,
     .rst = 8,
-    .dio = {2, 7, 9},
+    .dio = {3, 7, 6},
 };
 
 void onEvent (ev_t ev) {

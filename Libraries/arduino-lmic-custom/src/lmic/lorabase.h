@@ -34,6 +34,7 @@ TYPEDEF_xref2rps_t;
 enum { ILLEGAL_RPS = 0xFF };
 enum { DR_PAGE_EU868 = 0x00 };
 enum { DR_PAGE_US915 = 0x10 };
+enum { DR_PAGE_AS923 = 0x20 };
 
 // Global maximum frame length
 enum { STD_PREAMBLE_LEN  =  8 };
@@ -115,15 +116,18 @@ enum { DR_DFLTMIN = DR_SF8C };
 enum { DR_PAGE = DR_PAGE_US915 };
 
 // Default frequency plan for US 915MHz
-enum { US915_125kHz_UPFBASE = 902300000,
-       US915_125kHz_UPFSTEP =    200000,
-       US915_500kHz_UPFBASE = 903000000,
-       US915_500kHz_UPFSTEP =   1600000,
-       US915_500kHz_DNFBASE = 923300000,
-       US915_500kHz_DNFSTEP =    600000
+enum { US915_125kHz_UPFBASE = 915200000,   //(Zaki) base is 915.2, so if want to change, change here.
+       US915_125kHz_UPFSTEP =    200000,   //200kHz spacing
+       US915_500kHz_UPFBASE = 919800000,   //not being used in our LORA proto
+       US915_500kHz_UPFSTEP =   1600000,   //(Zaki) i don't think we want to use this.
+       US915_500kHz_DNFBASE = 923300000,   //Start of the Lorawan Standard Downlink Channel
+       US915_500kHz_DNFSTEP =    600000    //600kHz spacing
 };
-enum { US915_FREQ_MIN = 902000000,
-       US915_FREQ_MAX = 928000000 };
+enum { US915_FREQ_MIN = 919800000,         //our GW freq starts here, so follow GW
+       US915_FREQ_MAX = 928000000 };       //to cater up to the approved Downlink channel
+       
+       //923300000; 923900000; 924500000; 925100000; 925700000; 926300000; 926900000, 0,927500000 
+       //Above are the standard Downlink channel as per Lorawan 915MHz. Notice the spacing is 600Khz.
 
 enum { CHNL_PING         = 0 }; // used only for default init of state (follows beacon - rotating)
 enum { FREQ_PING         = US915_500kHz_DNFBASE + CHNL_PING*US915_500kHz_DNFSTEP };  // default ping freq
@@ -148,7 +152,57 @@ enum {
     LEN_BCN          = 19
 };
 
+#elif defined(CFG_as923) // ==============================================
+
+enum _dr_as923_t { DR_SF12=0, DR_SF11, DR_SF10, DR_SF9, DR_SF8, DR_SF7, DR_SF7B, DR_FSK, DR_NONE };
+enum { DR_DFLTMIN = DR_SF7 };
+enum { DR_PAGE = DR_PAGE_AS923 };
+
+// Default frequency plan for AS 923MHz ISM band
+// Bands:
+//  g1 :   1%  14dBm
+//  g2 : 0.1%  14dBm
+//  g3 :  10%  27dBm
+//                 freq             band     datarates
+//based on TTN arrangement
+enum { AS923_F1 = 923200000,      // g1   SF7-12
+       AS923_F2 = 923400000,      // g1   SF7-12 
+       AS923_F3 = 923600000,      // g1   SF7-12
+       AS923_F4 = 923800000,      // g2   SF7-12
+       AS923_F5 = 924000000,      // g2   SF7-12
+       AS923_F6 = 924200000,      // g3   SF7-12
+       AS923_J4 = 924400000,      // g2   SF7-12  
+       AS923_J5 = 924600000,      // g2   SF7-12   
+       AS923_J6 = 924500000,      // g2   SF7      
+};
+enum { AS923_FREQ_MIN = 920000000,
+       AS923_FREQ_MAX = 925000000 };
+
+enum { CHNL_PING         = 5 };
+enum { FREQ_PING         = AS923_F6 };  // default ping freq
+enum { DR_PING           = DR_SF9 };       // default ping DR
+enum { CHNL_DNW2         = 0 };
+enum { FREQ_DNW2         = AS923_F1 };
+enum { DR_DNW2           = DR_SF10 };
+enum { CHNL_BCN          = 5 };
+enum { FREQ_BCN          = AS923_F6 };
+enum { DR_BCN            = DR_SF9 };
+enum { AIRTIME_BCN       = 144384 };  // micros
+
+enum {
+    // Beacon frame format AS SF9
+    OFF_BCN_NETID    = 0,
+    OFF_BCN_TIME     = 3,
+    OFF_BCN_CRC1     = 7,
+    OFF_BCN_INFO     = 8,
+    OFF_BCN_LAT      = 9,
+    OFF_BCN_LON      = 12,
+    OFF_BCN_CRC2     = 15,
+    LEN_BCN          = 17
+};
+
 #endif // ===================================================
+
 
 enum {
     // Join Request frame format
@@ -335,6 +389,22 @@ enum {
     MCMD_LADR_14dBm     = 8,
     MCMD_LADR_12dBm     = 9,
     MCMD_LADR_10dBm     = 10
+#elif defined(CFG_as923)
+    MCMD_LADR_SF12      = DR_SF12<<4,
+    MCMD_LADR_SF11      = DR_SF11<<4,
+    MCMD_LADR_SF10      = DR_SF10<<4,
+    MCMD_LADR_SF9       = DR_SF9 <<4,
+    MCMD_LADR_SF8       = DR_SF8 <<4,
+    MCMD_LADR_SF7       = DR_SF7 <<4,
+    MCMD_LADR_SF7B      = DR_SF7B<<4,
+    MCMD_LADR_FSK       = DR_FSK <<4,
+
+    MCMD_LADR_20dBm     = 0,
+    MCMD_LADR_14dBm     = 1,
+    MCMD_LADR_11dBm     = 2,
+    MCMD_LADR_8dBm      = 3,
+    MCMD_LADR_5dBm      = 4,
+    MCMD_LADR_2dBm      = 5,
 #endif
 };
 
