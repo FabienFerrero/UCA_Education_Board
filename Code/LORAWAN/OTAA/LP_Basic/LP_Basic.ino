@@ -71,6 +71,20 @@ void os_getDevKey (u1_t* buf) {
   memcpy_P(buf, APPKEY, 16);
 }
 
+// LED control
+#include <FastLED.h>
+#define LED_PIN     4
+#define NUM_LEDS    9
+#define BRIGHTNESS  64
+#define LED_TYPE    WS2812
+#define COLOR_ORDER GRB
+#define UPDATES_PER_SECOND 100
+CRGB leds[NUM_LEDS];
+CRGBPalette16 currentPalette;
+TBlendType    currentBlending;
+extern CRGBPalette16 myRedWhiteBluePalette;
+extern const TProgmemPalette16 myRedWhiteBluePalette_p PROGMEM;
+
 static osjob_t sendjob;
 
 // global enviromental parameters : Place here the environment data you want to measure
@@ -89,6 +103,45 @@ const lmic_pinmap lmic_pins = {
 // ---------------------------------------------------------------------------------
 // Functions
 // ---------------------------------------------------------------------------------
+
+
+void FillLEDsFromPaletteColors( uint8_t colorIndex,uint8_t brightness)
+{
+       
+    for( int i = 0; i < NUM_LEDS; i++) {
+        leds[i] = ColorFromPalette( currentPalette, colorIndex, brightness, currentBlending);
+        colorIndex += 3;
+    }
+}
+
+
+void StartLED( uint8_t palette, int LED_delay, uint8_t brightness )
+{
+    long j=(long)UPDATES_PER_SECOND*LED_delay/1000;
+    static uint8_t startIndex = 0;
+
+    if( palette ==  0)  { currentPalette = RainbowColors_p;         currentBlending = LINEARBLEND; }
+        if( palette == 1)  { currentPalette = RainbowColors_p;   currentBlending = NOBLEND;  }
+        if( palette == 2)  { currentPalette = HeatColors_p;   currentBlending = LINEARBLEND; }
+        if( palette == 3)  { currentPalette = OceanColors_p;             currentBlending = LINEARBLEND; }
+        if( palette == 4)  { currentPalette = ForestColors_p;              currentBlending = LINEARBLEND; } //GREEN
+        if( palette == 5)  { currentPalette = ForestColors_p;       currentBlending = NOBLEND; } // GREEN
+        if( palette == 6)  { currentPalette = RainbowStripeColors_p;       currentBlending = LINEARBLEND; }
+        if( palette == 7)  { currentPalette = CloudColors_p;           currentBlending = LINEARBLEND; } // Blue
+        if( palette == 8)  { currentPalette = PartyColors_p;           currentBlending = LINEARBLEND; }
+        if( palette == 9)  { currentPalette = LavaColors_p; currentBlending = NOBLEND;  }
+        if( palette == 10)  { currentPalette = LavaColors_p; currentBlending = LINEARBLEND; }
+   
+    
+    for(int i =0;i< j;i++){
+    FillLEDsFromPaletteColors( startIndex,brightness);    
+    FastLED.show();
+    FastLED.delay(LED_delay / UPDATES_PER_SECOND);
+    startIndex++;
+    }
+    FastLED.clear ();
+    FastLED.show();
+}
 
 
 // Schedule TX every this many seconds (might become longer due to duty
@@ -251,11 +304,17 @@ void onEvent (ev_t ev) {
       //debugPrintLn(F("EV_BEACON_TRACKED"));
       break;
     case EV_JOINING:
+    #ifdef SHOW_LED
+    StartLED(9,1000,100);
+    #endif
     #ifdef SHOW_DEBUGINFO
     debugPrintLn(F("EV_JOINING"));
     #endif
        break;
     case EV_JOINED:
+    #ifdef SHOW_LED
+    StartLED(4,1000,100);
+    #endif
     #ifdef SHOW_DEBUGINFO
     debugPrintLn(F("EV_JOINED"));
     #endif
@@ -404,6 +463,13 @@ void setup() {
   delay(1000); //Wait 1s in order to avoid UART programmer issues when a battery is used
   
   Serial.begin(115200);
+
+
+  #ifdef SHOW_LED
+    FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
+    currentPalette = RainbowColors_p;
+    currentBlending = LINEARBLEND;    
+  #endif
   
   #ifdef SHOW_DEBUGINFO
   debugPrintLn(F("Starting"));
@@ -412,7 +478,14 @@ void setup() {
   
   Wire.begin();
 
+  #ifdef SHOW_LED
+  StartLED(1,1400,100);
+  delay(1000);
+  #endif 
+
   updateEnvParameters(); // To have value for the first Tx
+
+  
   
 
   // LMIC init

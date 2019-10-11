@@ -1,4 +1,3 @@
-
 /*******************************************************************************
    Copyright (c) 2015 Thomas Telkamp and Matthijs Kooijman
 
@@ -13,21 +12,10 @@
    application key is configured, which are used in an over-the-air
    activation procedure where a DevAddr and session keys are
    assigned/generated for use with all further communication.
-
-   Note: LoRaWAN per sub-band duty-cycle limitation is enforced (1% in
-   g1, 0.1% in g2), but not the TTN fair usage policy (which is probably
-   violated by this sketch when left running for longer)!
-
-   To use this sketch, first register your application and device with
-   the things network, to set or generate an AppEUI, DevEUI and AppKey.
-   Multiple devices can use the same AppEUI, but each device has its own
-   DevEUI and AppKey.
-
-   Do not forget to define the radio type correctly in config.h.
-
+   
 /*******************************************************************************
- This exemples has been modified by Fabien Ferrero to work on UCA board 
- and to remotly control a RGB LED
+ This exemples has been modified by Fabien Ferrero to work on UCA Education board 
+ and to remotly control the RGB LEDs
  ****************************************************************************************
  */
 
@@ -36,20 +24,12 @@
 #include <SPI.h>
 #include <Wire.h>
 
-
 //Sensors librairies
 
 #define debugSerial Serial
 #define SHOW_DEBUGINFO
 #define debugPrintLn(...) { if (debugSerial) debugSerial.println(__VA_ARGS__); }
 #define debugPrint(...) { if (debugSerial) debugSerial.print(__VA_ARGS__); }
-
-// Pin mapping for the RGBLED object:
-#define GREEN 3
-#define BLUE 6
-#define RED 5
-
-
 
 //Commented out keys have been zeroed for github
 
@@ -77,6 +57,20 @@ void os_getDevKey (u1_t* buf) {
   memcpy_P(buf, APPKEY, 16);
 }
 
+// LED control
+#include <FastLED.h>
+#define LED_PIN     4
+#define NUM_LEDS    9
+#define BRIGHTNESS  64
+#define LED_TYPE    WS2812
+#define COLOR_ORDER GRB
+#define UPDATES_PER_SECOND 100
+CRGB leds[NUM_LEDS];
+CRGBPalette16 currentPalette;
+TBlendType    currentBlending;
+extern CRGBPalette16 myRedWhiteBluePalette;
+extern const TProgmemPalette16 myRedWhiteBluePalette_p PROGMEM;
+
 
 static osjob_t sendjob;
 
@@ -98,7 +92,7 @@ const lmic_pinmap lmic_pins = {
   .nss = 10,
   .rxtx = LMIC_UNUSED_PIN,
   .rst = 8,
-  .dio = {2, 7, 9},
+  .dio = {3, 7, 6},
 };
 
 // ---------------------------------------------------------------------------------
@@ -167,9 +161,10 @@ void setDataRate() {
 }
 
 void setColor(int redValue,  int blueValue, int greenValue) {
-  analogWrite(RED, redValue);
-  analogWrite(GREEN, greenValue);
-  analogWrite(BLUE, blueValue);
+
+fill_solid( leds, NUM_LEDS, CRGB(greenValue,redValue,blueValue));
+FastLED.show();  
+ 
 }
 
 long readVcc() {
@@ -230,13 +225,13 @@ void onEvent (ev_t ev) {
     #ifdef SHOW_DEBUGINFO
     debugPrintLn(F("EV_JOINING"));
     #endif
-    setColor(0, 255, 255);   //RED   
+    setColor(0, 0, 255);   //RED   
       break;
     case EV_JOINED:
     #ifdef SHOW_DEBUGINFO
     debugPrintLn(F("EV_JOINED"));
     #endif
-    setColor(255, 255, 0); //GREEN  
+    setColor(255, 0, 0); //GREEN  
       setDataRate();      
       // Ok send our first data in 10 ms
       os_setTimedCallback(&sendjob, os_getTime() + ms2osticks(10), do_send);
@@ -290,21 +285,21 @@ void onEvent (ev_t ev) {
         
         switch (LMIC.frame[LMIC.dataBeg+4*i]){
         case 0x06 :
-        LED_RED = (word(LMIC.frame[LMIC.dataBeg+1],LMIC.frame[LMIC.dataBeg+2]))/100; // Converter download payload in int
+        LED_RED = (word(LMIC.frame[LMIC.dataBeg+1],LMIC.frame[LMIC.dataBeg+2])); // Converter download payload in int
         #ifdef SHOW_DEBUGINFO
         Serial.println(LED_RED);
         #endif
         break;
        
         case 0x07 :
-        LED_BLUE = (word(LMIC.frame[LMIC.dataBeg+1],LMIC.frame[LMIC.dataBeg+2]))/100; // Converter download payload in int
+        LED_BLUE = (word(LMIC.frame[LMIC.dataBeg+1],LMIC.frame[LMIC.dataBeg+2])); // Converter download payload in int
         #ifdef SHOW_DEBUGINFO
         Serial.println(LED_BLUE);
         #endif
         break;
 
         case 0x08 :
-        LED_GREEN = (word(LMIC.frame[LMIC.dataBeg+1],LMIC.frame[LMIC.dataBeg+2]))/100; // Converter download payload in int
+        LED_GREEN = (word(LMIC.frame[LMIC.dataBeg+1],LMIC.frame[LMIC.dataBeg+2])); // Converter download payload in int
         #ifdef SHOW_DEBUGINFO
         Serial.println(LED_GREEN);
         #endif
@@ -313,8 +308,8 @@ void onEvent (ev_t ev) {
       }
      }
      delay(5);
-      setColor(255-LED_RED, 255-LED_BLUE, 255-LED_GREEN);
-     delay(5000);
+      setColor(LED_GREEN*2.55, LED_BLUE*2.55, LED_RED*2.55);
+     
            
        // Schedule next transmission
       setDataRate();
@@ -425,6 +420,8 @@ void setup() {
   delay(1000); //Wait 1s in order to avoid UART programmer issues when a battery is used
   
   Serial.begin(115200);
+
+  FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
   
   #ifdef SHOW_DEBUGINFO
   debugPrintLn(F("Starting"));
@@ -433,13 +430,7 @@ void setup() {
   
   Wire.begin();
 
-  pinMode(GREEN, OUTPUT);
-  pinMode(BLUE, OUTPUT);
-  pinMode(RED, OUTPUT);
-  digitalWrite(GREEN, HIGH);
-  digitalWrite(BLUE, HIGH);
-  digitalWrite(RED, HIGH);
-
+  
   updateEnvParameters(); // To have value for the first Tx
   
 
