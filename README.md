@@ -7,6 +7,8 @@ Author: Fabien Ferrero and Trinh Le Huy
 
 This board was developed for education to support courses on embedded software, digital and analog electronic, telecommunication, signal processing and IoT.
 
+<img src="https://github.com/FabienFerrero/UCA_Education_Board/blob/master/Doc/Pictures/board.png">
+
 The board is fabricated by RFThings.
 
 # Wiring
@@ -26,11 +28,15 @@ The board is fabricated by RFThings.
 
  ```
  
+ <img src="https://github.com/FabienFerrero/UCA_Education_Board/blob/master/Doc/Pictures/capture.png">
+ 
+ 
 # USB Driver
 The board is using CH340C chip for USB to 
 You may need to install the driver to use the board:
 https://sparks.gogo.co.nz/ch340.html
- 
+
+<img src="https://github.com/FabienFerrero/UCA_Education_Board/blob/master/Doc/Pictures/USB.png">
 
 # Schematic
 
