@@ -225,13 +225,13 @@ void onEvent (ev_t ev) {
     #ifdef SHOW_DEBUGINFO
     debugPrintLn(F("EV_JOINING"));
     #endif
-    setColor(0, 0, 255);   //RED   
+    setColor(0, 0, 64);   //RED   
       break;
     case EV_JOINED:
     #ifdef SHOW_DEBUGINFO
     debugPrintLn(F("EV_JOINED"));
     #endif
-    setColor(255, 0, 0); //GREEN  
+    setColor(64, 0, 0); //GREEN  
       setDataRate();      
       // Ok send our first data in 10 ms
       os_setTimedCallback(&sendjob, os_getTime() + ms2osticks(10), do_send);
