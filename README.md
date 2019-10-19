@@ -28,7 +28,7 @@ The board is fabricated by RFThings.
 
  ```
  
- <img src="https://github.com/FabienFerrero/UCA_Education_Board/blob/master/Doc/Pictures/capture.png">
+ <img src="https://github.com/FabienFerrero/UCA_Education_Board/blob/master/Doc/Pictures/pinout_uca.png">
  
  
 # USB Driver
