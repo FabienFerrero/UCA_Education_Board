@@ -42,7 +42,7 @@
 //Sensors librairies
 
 #include "DHT.h"
-#define DHTPIN 6     // what pin we're connected to
+#define DHTPIN 5     // what pin we're connected to
 #define DHTTYPE DHT22   // DHT 22  (AM2302)
 
 
@@ -100,7 +100,7 @@ const lmic_pinmap lmic_pins = {
   .nss = 10,
   .rxtx = LMIC_UNUSED_PIN,
   .rst = 8,
-  .dio = {2, 7, 9},
+  .dio = {3, 7, 6},
 };
 
 // ---------------------------------------------------------------------------------

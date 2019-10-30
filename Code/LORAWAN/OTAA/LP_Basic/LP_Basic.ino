@@ -41,6 +41,7 @@
 
 #define debugSerial Serial
 #define SHOW_DEBUGINFO
+#define SHOW_LED
 #define debugPrintLn(...) { if (debugSerial) debugSerial.println(__VA_ARGS__); }
 #define debugPrint(...) { if (debugSerial) debugSerial.print(__VA_ARGS__); }
 

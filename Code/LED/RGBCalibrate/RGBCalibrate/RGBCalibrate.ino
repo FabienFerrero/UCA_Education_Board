@@ -23,6 +23,9 @@
 //
 //////////////////////////////////////////////////
 
+#include "LowPower.h"
+#include <LoRa.h>
+
 #define NUM_LEDS 9
 
 // Data pin that led data will be written out over
@@ -43,6 +46,18 @@ void setup() {
 }
 
 void loop() {
+  LoRa.sleep(); // move LoRa transciever in Sleep mode
+    leds[0] = CRGB(0,0,0);
+    leds[1] = CRGB(0,0,0);
+    leds[2] = CRGB(0,0,0);
+    leds[3] = CRGB(0,0,0);
+    leds[4] = CRGB(0,0,0);
+    leds[5] = CRGB(0,0,0);
+    leds[6] = CRGB(0,0,0);
+    leds[7] = CRGB(0,0,0);
+    leds[8] = CRGB(0,0,0);
+    FastLED.show();
+    do_sleep(5);
     leds[0] = CRGB(255,0,0);
     leds[1] = CRGB(0,255,0);
     leds[2] = CRGB(0,255,255);
@@ -53,5 +68,58 @@ void loop() {
     leds[7] = CRGB(0,0,255);
     leds[8] = CRGB(0,255,255);
     FastLED.show();
-    delay(1000);
+    do_sleep(5);
+    leds[0] = CRGB(0,0,0);
+    leds[1] = CRGB(0,0,0);
+    leds[2] = CRGB(0,0,0);
+    leds[3] = CRGB(0,0,0);
+    leds[4] = CRGB(0,0,0);
+    leds[5] = CRGB(0,0,0);
+    leds[6] = CRGB(0,0,0);
+    leds[7] = CRGB(0,0,0);
+    leds[8] = CRGB(0,0,0);
+    FastLED.show();
+    
+}
+
+void do_sleep(unsigned int sleepyTime) {
+  unsigned int eights = sleepyTime / 8;
+  unsigned int fours = (sleepyTime % 8) / 4;
+  unsigned int twos = ((sleepyTime % 8) % 4) / 2;
+  unsigned int ones = ((sleepyTime % 8) % 4) % 2;
+
+#ifdef SHOW_DEBUGINFO
+  Serial.print("Sleeping for ");
+  Serial.print(sleepyTime);
+  Serial.println(" seconds");  
+  delay(100); //Wait for serial to complete
+#endif
+
+
+  for ( int x = 0; x < eights; x++) {
+    // put the processor to sleep for 8 seconds
+    LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);
+  }
+  for ( int x = 0; x < fours; x++) {
+    // put the processor to sleep for 4 seconds
+    LowPower.powerDown(SLEEP_4S, ADC_OFF, BOD_OFF);
+  }
+  for ( int x = 0; x < twos; x++) {
+    // put the processor to sleep for 2 seconds
+    LowPower.powerDown(SLEEP_2S, ADC_OFF, BOD_OFF);
+  }
+  for ( int x = 0; x < ones; x++) {
+    // put the processor to sleep for 1 seconds
+    LowPower.powerDown(SLEEP_1S, ADC_OFF, BOD_OFF);
+  }
+  addMillis(sleepyTime * 1000);
+}
+
+extern volatile unsigned long timer0_millis;
+void addMillis(unsigned long extra_millis) {
+  uint8_t oldSREG = SREG;
+  cli();
+  timer0_millis += extra_millis;
+  SREG = oldSREG;
+  sei();
 }
