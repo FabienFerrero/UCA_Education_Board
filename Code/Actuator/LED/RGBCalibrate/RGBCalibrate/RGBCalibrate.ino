@@ -34,6 +34,7 @@
 //#define CLOCK_PIN 8
 
 CRGB leds[NUM_LEDS];
+int lum = 63;
 
 void setup() {
     // sanity check delay - allows reprogramming if accidently blowing power w/leds
@@ -58,28 +59,18 @@ void loop() {
     leds[8] = CRGB(0,0,0);
     FastLED.show();
     do_sleep(5);
-    leds[0] = CRGB(255,0,0);
-    leds[1] = CRGB(0,255,0);
-    leds[2] = CRGB(0,255,255);
-    leds[3] = CRGB(255,0,255);
-    leds[4] = CRGB(255,255,255);
-    leds[5] = CRGB(255,255,0);
-    leds[6] = CRGB(0,255,0);
-    leds[7] = CRGB(0,0,255);
-    leds[8] = CRGB(0,255,255);
+    leds[0] = CRGB(lum,0,0);
+    leds[1] = CRGB(0,lum,0);
+    leds[2] = CRGB(0,lum,lum);
+    leds[3] = CRGB(lum,0,lum);
+    leds[4] = CRGB(lum,lum,lum);
+    leds[5] = CRGB(lum,lum,0);
+    leds[6] = CRGB(0,lum,0);
+    leds[7] = CRGB(0,0,lum);
+    leds[8] = CRGB(0,lum,lum);
     FastLED.show();
     do_sleep(5);
-    leds[0] = CRGB(0,0,0);
-    leds[1] = CRGB(0,0,0);
-    leds[2] = CRGB(0,0,0);
-    leds[3] = CRGB(0,0,0);
-    leds[4] = CRGB(0,0,0);
-    leds[5] = CRGB(0,0,0);
-    leds[6] = CRGB(0,0,0);
-    leds[7] = CRGB(0,0,0);
-    leds[8] = CRGB(0,0,0);
-    FastLED.show();
-    
+        
 }
 
 void do_sleep(unsigned int sleepyTime) {
