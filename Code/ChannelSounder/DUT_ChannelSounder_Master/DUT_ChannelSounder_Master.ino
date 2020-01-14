@@ -46,7 +46,11 @@ int max_RSSI=-140;
 int min_RSSI=0;
 int average_RSSI=0;
 int RSSI_array[20];
+int offset = 120; // offset for RSSI
+int norm = 10; // Normalization value
+int buff = 20; // Buffer size for measurement
 float sqDevSum=0;
+int mode = 0; //define the mode used :  0:channel sounding 1:live antenna demo 
 
 // LED control
 #include <FastLED.h>
@@ -71,16 +75,14 @@ void button_pushed() {
 
 void setColor(int redValue,  int blueValue, int greenValue) {
 fill_solid( leds, NUM_LEDS, CRGB(greenValue,redValue,blueValue));
-FastLED.show(); 
+
 }
 
 
 void rssi2led(int RSSI){
 
- 
-
-  int LED = (RSSI+120)/10;
-  int hue = 360 - ((RSSI+120)*3.6);
+  int LED = (RSSI+offset)/norm;
+  int hue = 360 - ((RSSI+offset)*36/norm);
 
   long color = HSBtoRGB(hue, saturation, brightness);
  
@@ -95,15 +97,13 @@ void rssi2led(int RSSI){
   int dec = -RSSI%10;
   //Serial.println(dec);
 
-  if (dec >6) {
-    fill_solid( leds, 1, CRGB(32,0,0));
-    }
-  else if (dec > 3 && dec <7){
-    fill_solid( leds, 1, CRGB(0,32,0));
+  if (dec >5) {
+    fill_solid( leds, 1, CRGB(0,0,0));
     }
   else {
-    fill_solid( leds, 1, CRGB(0,0,32));}
-  
+    fill_solid( leds, 1, CRGB(0,32,0));
+    }
+    
   FastLED.show(); 
 
   }
@@ -123,11 +123,12 @@ void setup() {
     
   Serial.println("LoRa Receiver");
   setColor(64, 0, 0); //GREEN  
- 
+ FastLED.show(); 
   LoRa.setPins(SS,RST,DI0);
 
   if (!LoRa.begin(BAND)) {
     setColor(0, 0, 64); //GREEN
+    FastLED.show(); 
     while (1);
   }
   
@@ -156,13 +157,39 @@ void loop() {
   
   if(Pushdetected){ // reset Peak freq and max RSSI value
     Pushdetected = false;
-    max_RSSI=-140;
-    min_RSSI=0;
-    counter = -5; // start with count < 0 to add a small delay before the start of the measurement
-    index = -5;
-    max_freq=0;
-    min_freq=0;
-    setColor(0, 32, 0); //GREEN  
+    counter = -1; // start with count < 0 to add a small delay before the start of the measurement
+    index = 0;
+    if(mode ==2){
+      mode = 0;
+      Serial.println("Mode 0");
+      offset = 120;
+      buff = 20;
+    norm = 10;
+    setColor(32, 00, 0); //GREEN  
+    FastLED.show(); 
+    delay (1000);
+    }
+    else if (mode==1){
+    mode = 2; 
+    Serial.println("Mode 2"); 
+    offset = 80;
+    norm = 5;
+    buff = 1;
+    setColor(00, 32, 00); //Blue  
+    FastLED.show(); 
+    delay (1000);
+    }
+    
+    else {
+    mode = 1;
+    Serial.println("Mode 1");  
+    offset = 70;
+    norm = 5;
+    buff = 2;
+    setColor(00, 00, 32); //RED  
+    FastLED.show(); 
+    delay (1000);
+      }
     }
   
   // try to parse packet
@@ -173,12 +200,12 @@ void loop() {
     
         
     counter++;
-    if (index<20){
+    if (index<buff){
     index++;}
 
-    if (counter >20) { // reset array
+    if (counter >buff) { // reset array
       counter = 0;
-      index = 20;
+      index = buff;
       }
     
     // read packet
@@ -206,7 +233,7 @@ void loop() {
     long freq_MHz= freq / 1e6; // freq in MHz 
 
     
-     if(index > 10){
+     if(index > (buff-1)){
 
     average_RSSI = 0;
     for( int i=0; i<=index; i++ ) {
