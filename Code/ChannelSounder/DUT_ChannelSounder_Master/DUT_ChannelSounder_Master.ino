@@ -98,10 +98,10 @@ void rssi2led(int RSSI){
   //Serial.println(dec);
 
   if (dec >5) {
-    fill_solid( leds, 1, CRGB(0,0,0));
+    fill_solid( leds, 1, CRGB(0,32,0));
     }
   else {
-    fill_solid( leds, 1, CRGB(0,32,0));
+    fill_solid( leds, 1, CRGB(0,0,0));
     }
     
   FastLED.show(); 
