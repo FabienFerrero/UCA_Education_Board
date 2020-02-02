@@ -241,24 +241,7 @@ void loop() {
       }
     average_RSSI = average_RSSI / (index+1);
     
-    sqDevSum=0;
-    for( int i=0; i<=counter; i++ ) {
-      sqDevSum += (float) pow(average_RSSI - RSSI_array[i], 2);
     
-      }
-    sqDevSum = sqrt(sqDevSum /counter);
-
-    
-
-     if(RSSI > max_RSSI && counter > 0){
-      max_RSSI=RSSI;
-      max_freq=freq;
-      }
-
-  if(RSSI < min_RSSI && counter > 0){
-      min_RSSI=RSSI;
-      min_freq=freq;
-      }    
     // print RSSI of packet
            
       Serial.print(freq);
@@ -272,7 +255,7 @@ void loop() {
       
       }
     }    
-    long maxfreq_MHz= max_freq / 1e6; // freq in MHz
+    
     
     LoRa.setFrequency(freq); // change frequency
   }
