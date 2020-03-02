@@ -1,7 +1,7 @@
 #include <Wire.h>
 
-#define LAPIN A0 // PIN with Light sensor analog output 
-#define LPPIN 4 // PIN with Light power input
+#define LAPIN A3 // PIN with Light sensor analog output 
+#define LPPIN 7 // PIN with Light power input
 
 
 static float light;
