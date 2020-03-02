@@ -69,9 +69,6 @@ extern const TProgmemPalette16 myRedWhiteBluePalette_p PROGMEM;
  float brightness = .05; // Between 0 and 1 (0 = dark, 1 is full brightness)
 
 
-void button_pushed() {
-  Pushdetected = true;
-}
 
 void setColor(int redValue,  int blueValue, int greenValue) {
 fill_solid( leds, NUM_LEDS, CRGB(greenValue,redValue,blueValue));
@@ -117,7 +114,6 @@ void setup() {
   pinMode(2, INPUT_PULLUP);
   pinMode(A0, INPUT_PULLUP);
   pinMode(A1, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(2), button_pushed, CHANGE);
   
   FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
     
@@ -149,7 +145,7 @@ void setup() {
 
 void loop() {
 
-  if (digitalRead(A0)==LOW || digitalRead(A1)==LOW) { 
+  if (digitalRead(A0)==LOW || digitalRead(A1)==LOW|| digitalRead(2)==LOW) { 
     Pushdetected = true;    
     }
 
@@ -241,7 +237,24 @@ void loop() {
       }
     average_RSSI = average_RSSI / (index+1);
     
+    sqDevSum=0;
+    for( int i=0; i<=counter; i++ ) {
+      sqDevSum += (float) pow(average_RSSI - RSSI_array[i], 2);
     
+      }
+    sqDevSum = sqrt(sqDevSum /counter);
+
+    
+
+     if(RSSI > max_RSSI && counter > 0){
+      max_RSSI=RSSI;
+      max_freq=freq;
+      }
+
+  if(RSSI < min_RSSI && counter > 0){
+      min_RSSI=RSSI;
+      min_freq=freq;
+      }    
     // print RSSI of packet
            
       Serial.print(freq);
@@ -255,7 +268,7 @@ void loop() {
       
       }
     }    
-    
+    long maxfreq_MHz= max_freq / 1e6; // freq in MHz
     
     LoRa.setFrequency(freq); // change frequency
   }
