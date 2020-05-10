@@ -94,8 +94,8 @@ void onEvent (ev_t ev) {
             if (LMIC.txrxFlags & TXRX_ACK)
               Serial.println(F("Received ack"));
             if (LMIC.dataLen) {
-              Serial.println(F("Received "));
-              Serial.println(LMIC.dataLen);
+              Serial.print(F("Received "));
+              Serial.print(LMIC.dataLen);
               Serial.println(F(" bytes of payload"));
               for (int i = 0; i < LMIC.dataLen; i++) {
               if (LMIC.frame[LMIC.dataBeg + i] < 0x10) {
@@ -103,7 +103,9 @@ void onEvent (ev_t ev) {
               }
               Serial.print(LMIC.frame[LMIC.dataBeg + i], HEX);
               }
+              Serial.println("");
             }
+            
             // Schedule next transmission
             os_setTimedCallback(&sendjob, os_getTime()+sec2osticks(TX_INTERVAL), do_send);
             break;
@@ -144,18 +146,19 @@ void do_send(osjob_t* j){
 void setup() {
     Serial.begin(115200);
     Serial.println(F("Starting"));
-
-    #ifdef VCC_ENABLE
-    // For Pinoccio Scout boards
-    pinMode(VCC_ENABLE, OUTPUT);
-    digitalWrite(VCC_ENABLE, HIGH);
-    delay(1000);
-    #endif
-
+    
     // LMIC init
     os_init();
     // Reset the MAC state. Session and pending data transfers will be discarded.
     LMIC_reset();
+
+    /* This function is intended to compensate for clock inaccuracy (up to ±10% in this example), 
+    but that also works to compensate for inaccuracies due to software delays. 
+    The downside of this compensation is a longer receive window, which means a higher battery drain. 
+    So if this helps, you might want to try to lower the percentage (i.e. lower the 10 in the above call), 
+    often 1% works well already. */
+    
+    LMIC_setClockError(MAX_CLOCK_ERROR * 10 / 100);
 
     // Set static session parameters. Instead of dynamically establishing a session
     // by joining the network, precomputed session parameters are be provided.
