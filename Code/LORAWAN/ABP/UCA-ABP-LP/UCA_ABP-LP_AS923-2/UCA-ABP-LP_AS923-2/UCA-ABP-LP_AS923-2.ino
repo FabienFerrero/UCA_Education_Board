@@ -16,15 +16,6 @@
  *
  *******************************************************************************/
 
-/*******************************************************************************/
- // Region definition (will change de frequency bands
- // Define only 1 country
- //
-#define CFG_EU 1
-//#define CFG_VN 1
-
-/*******************************************************************************/
-
 #include <lmic.h>
 #include <hal/hal.h>
 #include <SPI.h>
@@ -37,7 +28,8 @@
 #define debugPrintLn(...) { if (debugSerial) debugSerial.println(__VA_ARGS__); }
 #define debugPrint(...) { if (debugSerial) debugSerial.print(__VA_ARGS__); }
 
-
+#define CFG_EU 1
+//#define CFG_VN 1
 
 
 //Define sensor PIN
