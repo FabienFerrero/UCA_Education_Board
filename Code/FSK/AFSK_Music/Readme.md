@@ -1,4 +1,4 @@
-The Sketch transmit an audio FSK or OOK with 10 possible different musics
+The Sketch transmit an audio FSK or OOK with 8 different musics and a audio frequency sweep.
 
 Use a RTL-SDR receiver to analyse the spectrum.
 
