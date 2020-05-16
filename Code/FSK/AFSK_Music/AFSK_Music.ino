@@ -24,9 +24,22 @@
 int freq = 865; // Carrier Frequency in Mhz
 int datarate = 20; // datarate in kbps
 int dev = 1; // Frequency deviation in KHz
-bool mod = 1; // 0 : FSK   1 : 00K
+bool mod = 0; // 0 : FSK   1 : 00K
 
-int mus = 0; // Set music
+/* Music List
+ *  0 :
+ *  1: Darth Vader theme (Imperial March) - Star wars 
+ *  2: Hedwig's theme - Harry Potter
+ *  3: The legend of Zelda theme
+ *  4: God Father Theme
+ *  5: Game of Thrones
+ *  6: Pink Panther theme
+ *  7: 5 octaves sweep up and down
+ *  8: Ode to Joy
+ *  9: Smoke on the water - Deep purple 
+ */
+
+int mus = 7; // Set music
 
 
 int* mel=melody1; // Pointer on music table
@@ -126,11 +139,11 @@ void loop() {
       noteDuration *= 1.5; // increases the duration in half for dotted notes
     }
 
-    // we only play the note for 90% of the duration, leaving 10% as a pause
+    // we only play the note for 95% of the duration, leaving 5% as a pause
     audio.tone(*(mel+note));
-    delay(noteDuration*0.9);
+    delay(noteDuration*0.95);
     audio.noTone();
-    delay(noteDuration*0.1);
+    delay(noteDuration*0.05);
   }
   
   Serial.println(F("done!"));
@@ -176,7 +189,7 @@ case 1:
     break;
     case 7:
     mel = melody7;
-    tempo = 90;
+    tempo = 180;
     return  sizeof(melody7);
     break;
     case 8:
