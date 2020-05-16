@@ -21,25 +21,25 @@
 #include "melody.h"
 
 // Parameters
-int freq = 865; // Carrier Frequency in Mhz
-int datarate = 20; // datarate in kbps
-int dev = 1; // Frequency deviation in KHz
-bool mod = 0; // 0 : FSK   1 : 00K
+int freq = 865; // Carrier Frequency in Mhz, default 865MHz
+int datarate = 20; // datarate in kbps, default 20KHz, min 2KHz
+int dev = 1; // Frequency deviation in KHz, default 1KHz
+bool mod = 0; // 0 : FSK   1 : 00K , default 0
 
 /* Music List
- *  0 :
- *  1: Darth Vader theme (Imperial March) - Star wars 
+ *  0: 5 octaves sweep up and down
+ *  1: Starwars and Darth Vader theme (Imperial March) - Star wars 
  *  2: Hedwig's theme - Harry Potter
  *  3: The legend of Zelda theme
  *  4: God Father Theme
  *  5: Game of Thrones
  *  6: Pink Panther theme
- *  7: 5 octaves sweep up and down
- *  8: Ode to Joy
+ *  7: Tetris Theme
+ *  8: Theme from Mario Bros
  *  9: Smoke on the water - Deep purple 
  */
 
-int mus = 7; // Set music
+int mus = 1; // Set music, default 0
 
 
 int* mel=melody1; // Pointer on music table
@@ -64,6 +64,8 @@ SX1276 fsk = new Module(10, 3, 9, 7);
 AFSKClient audio(&fsk, 6);
 
 void setup() {
+
+  delay(500);
   Serial.begin(9600); 
   pinMode(A3,INPUT);
    
