@@ -39,7 +39,7 @@ bool mod = 0; // 0 : FSK   1 : 00K , default 0
  *  9: Smoke on the water - Deep purple 
  */
 
-int mus = 1; // Set music, default 0
+int mus = 0; // Set music, default 0
 
 
 int* mel=melody1; // Pointer on music table
@@ -54,7 +54,7 @@ int m =sizeof(melody1); // size of music table
 // DIO0 pin:  3
 // RESET pin: 9
 // DIO1 pin:  7
-SX1276 fsk = new Module(10, 3, 9, 7);
+SX1276 fsk = new Module(10, 3, 9, 6);
 
 // create AFSK client instance using the FSK module
 // this requires connection to the module direct 
