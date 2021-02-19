@@ -17,9 +17,9 @@ void setup() {
 void loop() {
 
 
-for (int fadeValue = 0 ; fadeValue <= 255; fadeValue += 5) {
+for (int dc = 0 ; dc <= 255; dc += 5) {
     // sets the value (range from 0 to 255):
-    analogWrite(5, fadeValue);
+    analogWrite(5, dc);
     // wait for 30 milliseconds to see the dimming effect
     delay(50);
     
