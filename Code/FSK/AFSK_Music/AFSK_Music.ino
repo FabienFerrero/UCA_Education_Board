@@ -27,7 +27,7 @@ int dev = 1; // Frequency deviation in KHz, default 1KHz
 bool mod = 0; // 0 : FSK   1 : 00K , default 0
 
 /* Music List
- *  0: 5 octaves sweep up and down
+ *  0: Mix
  *  1: Starwars and Darth Vader theme (Imperial March) - Star wars 
  *  2: Hedwig's theme - Harry Potter
  *  3: The legend of Zelda theme
@@ -36,7 +36,7 @@ bool mod = 0; // 0 : FSK   1 : 00K , default 0
  *  6: Pink Panther theme
  *  7: Tetris Theme
  *  8: Theme from Mario Bros
- *  9: Smoke on the water - Deep purple 
+ *  9: 5 octaves sweep up and down 
  */
 
 int mus = 0; // Set music, default 0
