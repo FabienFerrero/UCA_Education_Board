@@ -17,11 +17,11 @@ void setup() {
 void loop() {
 
 
-for (int dc = 0 ; dc <= 255; dc += 5) {
+for (int dc = 128 ; dc <= 128; dc += 5) {
     // sets the value (range from 0 to 255):
     analogWrite(5, dc);
     // wait for 30 milliseconds to see the dimming effect
-    delay(50);
+    delay(100);
     
   // read the input on analog pin 0:
   int sensorValue = analogRead(A2);
@@ -30,5 +30,5 @@ for (int dc = 0 ; dc <= 255; dc += 5) {
   // print out the value you read:
   Serial.println(voltage);
 
-}
+     }
 }
