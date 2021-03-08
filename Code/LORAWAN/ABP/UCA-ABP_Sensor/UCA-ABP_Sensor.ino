@@ -33,7 +33,7 @@
 
 
 #define debugSerial Serial
-//#define SHOW_DEBUGINFO
+#define SHOW_DEBUGINFO
 #define debugPrintLn(...) { if (debugSerial) debugSerial.println(__VA_ARGS__); }
 #define debugPrint(...) { if (debugSerial) debugSerial.print(__VA_ARGS__); }
 
@@ -45,18 +45,18 @@
 #define LPPIN 5 // PIN with Light power input
 
 // LoRaWAN end-device address (DevAddr)
-static const u4_t DEVADDR = 0x2601162F;
+static const u4_t DEVADDR = 0x00000000;
 
 // LoRaWAN NwkSKey, network session key
 // This is the default Semtech key, which is used by the early prototype TTN
 // network.
-static const PROGMEM u1_t NWKSKEY[16] = { 0xD7, 0x6C, 0x09, 0xE9, 0xD4, 0x80, 0x45, 0xFC, 0xB7, 0x92, 0x70, 0x17, 0x39, 0x85, 0x1F, 0x02 };
+static const PROGMEM u1_t NWKSKEY[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
 
 // LoRaWAN AppSKey, application session key
 // This is the default Semtech key, which is used by the early prototype TTN
 // network.
-static const u1_t PROGMEM APPSKEY[16] = { 0x85, 0x43, 0xEB, 0x8C, 0x13, 0xC9, 0x7A, 0xB8, 0x8A, 0x57, 0x77, 0xEE, 0xFD, 0x57, 0x05, 0xAE };
+static const u1_t PROGMEM APPSKEY[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
 // These callbacks are only used in over-the-air activation, so they are
 // left empty here (we cannot leave them out completely unless
@@ -316,8 +316,8 @@ void do_send(osjob_t* j){
             debugPrint(F("BV="));
             debugPrintLn(batvalue);
         #endif
-            int t = (int)((temp) / 10.0);
-            int h = (int)(humidity / 50.0);
+            int t = (int)((temp) * 10.0); // Temp unit is 0.1°
+            int h = (int)(humidity * 2); // hum unit is 0.5%
             int bat = batvalue; // multifly by 10 for V in Cayenne
             int l = light; // light sensor in Lx
         
