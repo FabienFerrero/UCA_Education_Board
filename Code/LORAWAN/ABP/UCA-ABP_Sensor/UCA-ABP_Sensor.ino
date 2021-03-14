@@ -30,6 +30,7 @@
 #include <SPI.h>
 #include "LowPower.h"
 //Sensors librairies
+#include <SI7021.h>
 
 
 #define debugSerial Serial
@@ -44,6 +45,8 @@
 #define LAPIN A3 // PIN with Light sensor analog output 
 #define LPPIN 5 // PIN with Light power input
 
+SI7021 sensor;
+
 // LoRaWAN end-device address (DevAddr)
 static const u4_t DEVADDR = 0x00000000;
 
@@ -57,6 +60,7 @@ static const PROGMEM u1_t NWKSKEY[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x
 // This is the default Semtech key, which is used by the early prototype TTN
 // network.
 static const u1_t PROGMEM APPSKEY[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+
 
 // These callbacks are only used in over-the-air activation, so they are
 // left empty here (we cannot leave them out completely unless
@@ -80,13 +84,13 @@ static float light;
 
 // Schedule TX every this many seconds (might become longer due to duty
 // cycle limitations).
-const unsigned TX_INTERVAL = 10;
+const unsigned TX_INTERVAL = 60;
 
 // Pin mapping
 const lmic_pinmap lmic_pins = {
     .nss = 10,
     .rxtx = LMIC_UNUSED_PIN,
-    .rst = 4,
+    .rst = 8,
     .dio = {3, 7, 6},
 };
 
@@ -200,7 +204,9 @@ void updateEnvParameters()
 {
    
        temp = 20.0;
-       humidity = 50;
+       int temperature = sensor.getCelsiusHundredths();
+       temp = temperature / 100;
+       humidity = sensor.getHumidityPercent();
        light = readLight();
        batvalue = (int)(readVcc()/10);  // readVCC returns in tens of mVolt 
           
@@ -316,8 +322,8 @@ void do_send(osjob_t* j){
             debugPrint(F("BV="));
             debugPrintLn(batvalue);
         #endif
-            int t = (int)((temp) * 10.0); // Temp unit is 0.1°
-            int h = (int)(humidity * 2); // hum unit is 0.5%
+            int t = (int)((temp) * 10.0);
+            int h = (int)(humidity * 2);
             int bat = batvalue; // multifly by 10 for V in Cayenne
             int l = light; // light sensor in Lx
         
@@ -360,6 +366,8 @@ void setup() {
     debugPrintLn(F("Starting"));
     delay(100);
     #endif  
+
+    
 
    updateEnvParameters(); // To have value for the first Tx
   
