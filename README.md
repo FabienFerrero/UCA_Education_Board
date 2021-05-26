@@ -25,6 +25,9 @@ The board is fabricated by RFThings.
  D7          <----> DIO1
  D6          <----> DIO2
  3.3V        <----> Vcc
+ A0          <----> BT0
+ A1          <----> BT1
+ A2          <----> 2
 
  ```
  
@@ -37,6 +40,10 @@ You may need to install the driver to use the board:
 https://sparks.gogo.co.nz/ch340.html
 
 <img src="https://github.com/FabienFerrero/UCA_Education_Board/blob/master/Doc/Pictures/usb.png">
+
+# Board programming
+
+
 
 # Schematic
 
