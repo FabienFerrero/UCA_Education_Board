@@ -27,7 +27,7 @@ The board is fabricated by RFThings.
  3.3V        <----> Vcc
  A0          <----> BT0
  A1          <----> BT1
- D2           <----> BT2
+ D2          <----> BT2
 
  ```
  
