@@ -43,7 +43,9 @@ https://sparks.gogo.co.nz/ch340.html
 
 # Board programming
 
-
+Select "Arduino Pro or Pro Mini"
+Select "ATMega328p (3.3V 8MHz)"
+Select the port
 
 # Schematic
 
